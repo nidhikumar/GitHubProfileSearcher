@@ -1,0 +1,45 @@
+<div class="container">
+    <br/>
+	<div class="row justify-content-center">
+                        <div class="col-12 col-md-10 col-lg-8">
+                            <form class="card card-sm">
+                                <div class="card-body row no-gutters align-items-center">
+                                    <div class="col-auto">
+                                        <i class="fas fa-search h4 text-body"></i>
+                                    </div>
+                                    <div class="col">
+                                        <input class="form-control form-control-lg form-control-borderless" placeholder="Search topics or keywords"  [(ngModel)]="search" name="user">
+                                    </div>
+                                    <div class="col-auto">
+                                        <button class="btn btn-lg btn-success" id="submitButton" type="submit" (click)="searchUser()">Search</button>
+                                    </div>
+
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+                    <br>
+    <ng-template #elseBlock>
+    </ng-template>
+    <div class="row col-auto" *ngIf="userFlag==true;else elseBlock" >
+        <button class="btn btn-lg btn-success" type="submit" (click)="hightolow()">High to Low</button>
+
+        <button class="btn btn-lg btn-success" type="submit" (click)="lowtohigh()">Low to High</button>
+
+    </div>
+    <br>
+    <div class="row" *ngIf="userFlag==true;else elseBlock">
+    <div *ngFor="let user of users?.items">         
+     
+         <div class="col-sm">
+            <div class="card" style="width: 18rem;">
+                <img class="card-img-top" src={{user.avatar_url}} alt="Card image cap">
+                <div class="card-body">
+                  <p class="card-text">{{user.login}}</p>
+                  <p class="card-text">{{user.score}}</p>
+                </div>
+              </div>
+         </div>
+     </div>
+    </div> 
+</div>
