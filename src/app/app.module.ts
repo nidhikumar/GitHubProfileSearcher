@@ -7,6 +7,10 @@ import { ProfileListComponent } from './profile-list/profile-list.component';
 import { FilterPipe } from './filter.pipe';
 import { HttpClientModule }    from '@angular/common/http';
 import { HttpHeaders } from '@angular/common/http';
+import { BsModalService, BsModalRef, ModalModule } from 'ngx-bootstrap/modal';  
+import { PaginationModule } from 'ngx-bootstrap/pagination';
+import {NgxPaginationModule} from 'ngx-pagination'
+
 
 @NgModule({
   declarations: [
@@ -18,7 +22,10 @@ import { HttpHeaders } from '@angular/common/http';
     BrowserModule,
     AppRoutingModule,
     HttpClientModule,
-    FormsModule
+    FormsModule,
+    ModalModule.forRoot(),
+    PaginationModule.forRoot(),
+    NgxPaginationModule
   ],
   providers: [],
   bootstrap: [AppComponent]

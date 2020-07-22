@@ -1,6 +1,6 @@
 <div class="container">
     <br/>
-	<div class="row justify-content-center">
+  <div class="row justify-content-center">
                         <div class="col-12 col-md-10 col-lg-8">
                             <form class="card card-sm">
                                 <div class="card-body row no-gutters align-items-center">
@@ -8,38 +8,75 @@
                                         <i class="fas fa-search h4 text-body"></i>
                                     </div>
                                     <div class="col">
-                                        <input class="form-control form-control-lg form-control-borderless" placeholder="Search topics or keywords"  [(ngModel)]="search" name="user">
+                                        <input id="s" class="form-control form-control-lg form-control-borderless" type="search" placeholder="Search topics or keywords" [(ngModel)]="users">   
                                     </div>
+                                   
                                     <div class="col-auto">
-                                        <button class="btn btn-lg btn-success" id="submitButton" type="submit" (click)="searchUser()">Search</button>
+                                        <button class="btn btn-lg btn-success" type="submit" (click)='search()'>Search</button>
                                     </div>
-
                                 </div>
                             </form>
+                           
                         </div>
-                    </div>
-                    <br>
-    <ng-template #elseBlock>
+                    </div><br>
+    <ng-template #elseBlock1>
+         <p class="text gray-800"></p>
     </ng-template>
-    <div class="row col-auto" *ngIf="userFlag==true;else elseBlock" >
-        <button class="btn btn-lg btn-success" type="submit" (click)="hightolow()">High to Low</button>
-
-        <button class="btn btn-lg btn-success" type="submit" (click)="lowtohigh()">Low to High</button>
-
-    </div>
-    <br>
-    <div class="row" *ngIf="userFlag==true;else elseBlock">
-    <div *ngFor="let user of users?.items">         
-     
+    <ng-template #elseBlock2>
+        <div class="row" *ngIf="divFlag==1; else elseBlock2">   
+            <div *ngFor="let user of searchdata?.items | orderBy:'score'">         
+                 <div class="col-sm">
+                    <div class="card" style="width: 18rem;">
+                        <img class="card-img-top" src={{user.avatar_url}} alt="Card image cap">
+                        <div class="card-body">
+                          <p class="card-text">{{user.login}}</p>
+                          <p class="text gray-800">{{user.score}}</p>
+                        </div>
+                      </div>
+                 </div>
+             </div>
+            </div> 
+   </ng-template>
+    <div *ngIf="userFlag==true;else elseBlock1">
+        <button class="btn btn-info" (click)="hightolow()">High to low</button>&nbsp;
+        <button class="btn btn-info" (click)="lowtohigh()">Low To High</button>
+    <div class="row" *ngIf="divFlag==0; else elseBlock2">   
+    <div *ngFor="let user of searchdata?.items | paginate : {itemsPerPage: perPage, currentPage: currPage }">         
          <div class="col-sm">
-            <div class="card" style="width: 18rem;">
+            <div class="card" style="width: 18rem;" (click)="openModal(template,user.login)" >
                 <img class="card-img-top" src={{user.avatar_url}} alt="Card image cap">
                 <div class="card-body">
-                  <p class="card-text">{{user.login}}</p>
-                  <p class="card-text">{{user.score}}</p>
+                  <p class="card-text">{{user.login}}</p><br>
+                  <p class="text gray-800">{{user.score}}</p><br>
+                  <button class="btn btn-primary" >Details</button>
+  
                 </div>
               </div>
          </div>
      </div>
     </div> 
-</div>
+    <div class="text-right"> 
+      <pagination-controls (pageChange)="setPage($event)"></pagination-controls>
+    </div>
+  
+    <!-- <pagination-controls [totalItems]="totalItems" [(ngModel)]="currentPage"></pagination> -->
+    </div>
+  </div> 
+  <ng-template #template>
+    <div class="modal-header">
+      <h5 class="modal-title pull-left"> <p class="btn btn-info"><b style="font-size: 18px;">{{secondData.login}}</b></p></h5>
+      <button type="button" class="close pull-right" aria-label="Close" (click)="modalRef.hide()">
+        <span aria-hidden="true">&times;</span>
+      </button>
+    </div>
+    <div class="modal-body">
+        <div infinite-scroll='loadMore()' infinite-scroll-distance='2'>
+       <br>
+       <b>{{"Public_repos : "}}</b>{{secondData?.public_repos}}<br>
+       <b> {{"Followers : "}} </b>{{secondData?.followers}}<br>
+        <b>{{"Following : " }} </b>{{secondData?.following}}<br>
+        <b>{{"CreatedAt : " }} </b>{{secondData?.created_at | date}}<br>
+        <i class="fa fa-flag" style="font-size:24px"></i>
+    </div>
+    </div>
+  </ng-template>

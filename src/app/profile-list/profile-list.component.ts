@@ -1,35 +1,64 @@
 import { Component, OnInit } from '@angular/core';
-import {HttpClientModule} from '@angular/common/http';
-import { HttpClient } from '@angular/common/http';
-import {YService} from '../y.service';
+import  {YService} from '../y.service'
+import { TemplateRef } from '@angular/core';
+import { BsModalService, BsModalRef } from 'ngx-bootstrap/modal';
+import { from } from 'rxjs';
+
 @Component({
   selector: 'app-profile-list',
   templateUrl: './profile-list.component.html',
   styleUrls: ['./profile-list.component.css']
 })
 export class ProfileListComponent implements OnInit {
+public users:any;
+public searchdata:any;
+public userFlag=false;
+public divFlag=0;
+public secondData:any;
+modalRef: BsModalRef;
+perPage = 6;
+  currPage = 1;
 
-  public search;
-  public users;
-  public userFlag=false;
-  constructor(private userservice:YService) { }
+  constructor(private profileservice:YService,private modalService: BsModalService) { }
+  openModal(template: TemplateRef<any>,user) {
+    this.modalRef = this.modalService.show(template);
+    this.profileservice.getSecondApi(user).subscribe(data =>
+      {
+        
+        this.secondData=data;
+        console.log(this.secondData);
+      }
+
+    )
+  }
+
+  setPage(event){
+    this.currPage = event;
+  }
 
   ngOnInit(): void {
+    
   }
-  searchUser()
+  search()
   {
-     this.userservice.searchUser1(this.search).subscribe(
-       data=>this.users=data,error=>console.log(error)
-        
-     )
-     this.userFlag=true;
+    this.profileservice.getData(this.users).subscribe(data=>
+      {
+        this.searchdata=data;
+      });
+      this.userFlag=true;
   }
-  hightolow()
+  setDivFlag()
   {
-    this.userservice.hightolow();
+    this.divFlag=1;
   }
-  lowtohigh()
-  {
-    this.userservice.lowtohigh();
+  hightolow(){
+    this.profileservice.hightolow();
+
   }
+  lowtohigh(){
+    this.profileservice.lowtohigh();
+  }
+     
+  
+
 }
