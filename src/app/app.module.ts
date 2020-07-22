@@ -10,6 +10,8 @@ import { HttpHeaders } from '@angular/common/http';
 import { BsModalService, BsModalRef, ModalModule } from 'ngx-bootstrap/modal';  
 import { PaginationModule } from 'ngx-bootstrap/pagination';
 import {NgxPaginationModule} from 'ngx-pagination'
+import { InfiniteScrollModule } from 'ngx-infinite-scroll';
+import { NgxSpinnerModule } from 'ngx-spinner';
 
 
 @NgModule({
@@ -25,7 +27,9 @@ import {NgxPaginationModule} from 'ngx-pagination'
     FormsModule,
     ModalModule.forRoot(),
     PaginationModule.forRoot(),
-    NgxPaginationModule
+    NgxPaginationModule,
+    InfiniteScrollModule,
+    NgxSpinnerModule
   ],
   providers: [],
   bootstrap: [AppComponent]
