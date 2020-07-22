@@ -15,76 +15,73 @@ import { NgxSpinnerService } from 'ngx-spinner';
   styleUrls: ['./profile-list.component.css']
 })
 export class ProfileListComponent implements OnInit {
-  userFlag = false;
+  public search;
+  public users:any;
+  public userFlag=false;
+  public userDetail;
+  totalItems = 30;
+  currentPage = 1;
+  page=1;
+  perPage=6;
   notEmptyPost=true;
   notscrolly=true;
-  title: string;
-  userData:  any;
-  user: any
+  count=1;
   modalRef: BsModalRef;
-  
-  
-  public count =1;
-
-  constructor( private search  : YService,private modalService: BsModalService) {   }
+  constructor( private userservice  : YService,private modalService: BsModalService, private spinner: NgxSpinnerService) {   }
       
-  onSearch(){
-     
-    this.search.getUsers(this.title).subscribe((result:any) => {
-      this.userData = result.items; })
-      this.userFlag= true;
-     
+  searchUser()
+  {
+
+     this.userservice.searchUser1(this.search).subscribe(
+       (data:any)=>{this.users=data.items;}
+       
+     )
+     this.userFlag=true;
   }
-  onsort(){
-      
-     
-    this.search.getSortUser(this.title).subscribe((result:any) => {
-      this.userData = result; })
-
-
+  highToLow()
+  {
+    this.userservice.highToLow(this.search);
   }
-  onsort1(){
-      
-     
-    this.search.getSortUser1(this.title).subscribe((result:any) => {
-      this.userData = result; })
-
-
-  }
-
-  onDetails(template : TemplateRef<any>, username  : any ){
-      
-     console.log(username);
-      this.search.getUsername(username).subscribe((result : any) =>{
-         this.user= result;
+  openModal(template: TemplateRef<any>,username)
+  {
+   // console.log(username);
+    this.modalRef = this.modalService.show(template);
+    this.userservice.userDetail(username).subscribe(
+       data=>{this.userDetail=data;
+        console.log(this.userDetail);
       })
-      this.modalRef = this.modalService.show(template);
-  
   }
-  
+
+  setPage(event)
+  {
+    this.page=event;
+  }
   onScroll(){
-     if(this.notscrolly && this.notEmptyPost){
-           this.notscrolly=false;
-           console.log("scrolled");
-           this.loadNextPost();
-     }
-   }
-  loadNextPost(){
-      this.count=this.count+1; 
-      this.search.getnextpage(this.title,this.count).subscribe((result:any )=>{
-        const newPost = result;
-        console.log(newPost);
-        if(newPost.length == 0 ){
-          this.notEmptyPost=false;
-        }
-        Array.prototype.push.apply(this.userData,newPost.items);
-        console.log(this.userData,newPost.items);
-        this.notscrolly=true;
-      });
-
+    if(this.notscrolly && this.notEmptyPost){
+          this.notscrolly=false;
+          console.log("scrolled");
+          this.spinner.show();
+          this.loadNextPost();
+    }
   }
-  ngOnInit(): void {
-  }
+ loadNextPost(){
+     
+     this.userservice.getnextpage(this.search,this.count).subscribe((result:any )=>{
+       const newPost = result;
+       console.log(newPost);
+       if(newPost.length == 0 ){
+         this.notEmptyPost=false;
+       }
+       Array.prototype.push.apply(this.users,result.items);
+       console.log(this.users,newPost.items);
+       this.count=this.count+1; 
+       this.spinner.hide();
+       this.notscrolly=true;
+     });
 
-
+ }
+ ngOnInit(): void {
 }
+}
+
+

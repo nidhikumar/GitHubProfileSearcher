@@ -1,38 +1,28 @@
 import { Injectable } from '@angular/core';
-import {HttpClient} from '@angular/common/http'
+import {HttpClient,HttpParams} from '@angular/common/http'
 @Injectable({
   providedIn: 'root'
 })
 export class YService {
-  constructor(private http: HttpClient) { }
-     
-  getUsers(user :string ){
-        
-       return this.http.get("https://api.github.com/search/users?q="+ user);
-
+  private _url:string="https://api.github.com/search/users?q=";
+  constructor(private http:HttpClient) { }
+  searchUser1(value:string){
+    return this.http.get(this._url+value);
   }
-  getSortUser(user:string ){
 
-
-   return this.http.get("https://api.github.com/search/users?q="+ user+'&sort=score&direction=asc');
-
+  highToLow(user:string)
+  {
+    let params = new HttpParams();
+    params = params.append('sort', 'id');
+    params = params.append('order', 'desc');
+    return this.http.get("https://api.github.com/search/users?q="+user,{params: params});
   }
-  getSortUser1(user:string ){
-
-
-   return this.http.get("https://api.github.com/search/users?q="+ user+'&sort=score&direction=desc');
-
+  userDetail(username:string)
+  {
+     return this.http.get("https://api.github.com/users/"+username);
   }
- 
-   getUsername(username : string){
-      
-       return this.http.get("https://api.github.com/users/"+username);
-
-   }
-   getnextpage(user :string ,counter : any){
-       
-       return this.http.get("https://api.github.com/search/users?q="+ user+"&page=" +counter);
-
-   }
-
+  getnextpage(user:string,count:any)
+  {
+    return this.http.get(this._url+user+"&page="+count);
+  }
 }

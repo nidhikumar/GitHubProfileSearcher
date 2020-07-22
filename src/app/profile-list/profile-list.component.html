@@ -1,91 +1,90 @@
-<div class = "container">
-    <form action=""  (ngsubmit)="onSearch()">
-        <div class = "form-row">
-           <div class= "from-group col-md-8">
-               <label for="query">Search  : </label>
-               <input type="text" class="border-success" style="height:50px; width:500px;"   name="title" [(ngModel)]="title"
-               id="query" placeholder="Enter the User Name"/>
-               <button
-                class="btn btn-primary"
-                (click)="onSearch()"
-                type="submit">
-                Search </button>
-           </div>
-          </div>
-          <hr>
-    </form>
-    <ng-template #elseBlock>
-    
+<div class="container" style="background-color:mistyrose;">
+    <br/>
+	<div class="row justify-content-center">
+                        <div class="col-12 col-md-10 col-lg-8">
+                            <form class="card card-sm">
+                                <div class="card-body row no-gutters align-items-center">
+                                    <div class="col-auto">
+                                        <i class=" fa fa-search"></i>
+                                    </div>
+                                    <div class="col">
+                                        <input class="form-control form-control-lg form-control-borderless" placeholder="Search topics or keywords"  [(ngModel)]="search" name="user">
+                                    </div>
+                                    <div class="col-auto">
+                                        <button class="btn btn-lg btn-success" type="submit" (click)="searchUser()">Search</button>
+                                    </div>
+                                </div>
+                            </form>
+                            <!-- <p *ngFor="let user of users.items">
+                                {{user|json}}
+                            </p> -->
+                        </div>
+                    </div><br>
+    <ng-template #elseBlock1>
+         <p class="text gray-800">Loading..</p>
     </ng-template>
-    <div *ngIf="userFlag==true;else elseBlock">
-      <button
-      class="btn btn-success mr-2"
-      (click)="onsort()">
-      Low To High
-    </button>
-    <button
-      class="btn btn-info"
-      (click)="onsort1()">
-      High To Low
-    </button>
-    <hr>
- 
-    <div class="container1">
-      <div
-      class="search-results"
-      infiniteScroll
-      [infiniteScrollDistance]="2"
-      [infiniteScrollThrottle]="50"
-      (scrolled)="onScroll()"
-      > 
-      <div class ="row">
-        <div class = "panel-body" *ngFor="let user of userData ">
-             <div class="col-sm">
-              <div class ="card border-primary" style="width: 18rem;">
-                <img class="card-img-top" src={{user.avatar_url}} alt="Card image cap">
-                 <div class="card-body">
-                  <h5 class="card-title">{{user.login}}</h5>
-                  <p class="card-text">Score   : {{user.score}}</p>
-                  <a (click)="onDetails(template,user.login)" class="btn btn-primary">Details</a>
-                </div>
-               </div>
-               <hr>
+    <!-- <ng-template #elseBlock2>
+        <div class="row" *ngIf="divFlag==1">   
+            <div ng-repeat="user in users?.items | orderBy:'-id'">         
+                 <div class="col-sm">
+                    <div class="card" style="width: 18rem;">
+                        <img class="card-img-top" src={{user.avatar_url}} alt="Card image cap">
+                        <div class="card-body">
+                          <p class="card-text">{{user.login}}</p>
+                          <p class="text gray-800">{{user.score}}</p>
+                        </div>
+                      </div>
+                 </div>
              </div>
-        </div>
-      </div>
-    </div>
-    </div>
+            </div> 
+   </ng-template> -->
+   
+    <div class="container"*ngIf="userFlag==true;else elseBlock1">
+        <div
+        class="search-results"
+        infiniteScroll
+        [infiniteScrollDistance]="2"
+        [infiniteScrollThrottle]="50"
+        (scrolled)="onScroll()"
+        > 
+        <button class="btn btn-info" (click)="highToLow()" >High to low</button>&nbsp;
+        <button class="btn btn-info">Low To High</button>
       
+    <div class="row" >   
+    <!-- <div *ngFor="let user of users?.items | paginate:{id:'list_pagination',
+    itemsPerPage:perPage,
+    currentPage:page,
+    totalItems:30}">          -->
+    <div *ngFor="let user of users">
+         <div class="col-sm">
+            <div class="card" style="width: 18rem;" (click)="openModal(template,user.login)">
+                <img class="card-img-top" src={{user.avatar_url}} alt="Card image cap">
+                <div class="card-body">
+                  <p class="card-text">{{user.login}}</p>
+                  <p class="text gray-800">{{user.id}}</p>
+                </div>
+              </div>
+         </div>
+     </div>
+    </div> 
+    <!-- <pagination-controls id="list_pagination" directionalLinks="true"  maxSize="5"[totalItems]="30" [(ngModel)]="currentPage" (pageChange)="setPage($event)"></pagination-controls> -->
+
+</div>
+
+<ng-template #template>
+    <div class="modal-header " style="background-color: cadetblue;">
+      <h4 class="modal-title pull-left ">{{userDetail?.login}}</h4>
+      <i *ngIf="userDetail?.site_admin==false" class="fa fa-flag " style="font-size: 24px;" aria-hidden="true"></i>
+      <i *ngIf="userDetail?.site_admin==true" class="fa fa-flag-o " style="font-size: 24px;"aria-hidden="true"></i>
+      <button type="button" class="close pull-right" aria-label="Close" (click)="modalRef.hide()">
+        <span aria-hidden="true">&times;</span>
+      </button>
     </div>
-    
-    <ng-template #template>
-      <div class="modal-header">
-        <h4 class="modal-title pull-left">{{user?.name}}</h4>
-        <div *ngIf="user?.site_admin; else flagElseBlock">
-          <svg width="1em" height="1em" viewBox="0 0 16 16" style="margin-top:12px; color:green" class="bi bi-flag-fill" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
-              <path fill-rule="evenodd" d="M3.5 1a.5.5 0 0 1 .5.5v13a.5.5 0 0 1-1 0v-13a.5.5 0 0 1 .5-.5z"/>
-              <path fill-rule="evenodd" d="M3.762 2.558C4.735 1.909 5.348 1.5 6.5 1.5c.653 0 1.139.325 1.495.562l.032.022c.391.26.646.416.973.416.168 0 .356-.042.587-.126a8.89 8.89 0 0 0 .593-.25c.058-.027.117-.053.18-.08.57-.255 1.278-.544 2.14-.544a.5.5 0 0 1 .5.5v6a.5.5 0 0 1-.5.5c-.638 0-1.18.21-1.734.457l-.159.07c-.22.1-.453.205-.678.287A2.719 2.719 0 0 1 9 9.5c-.653 0-1.139-.325-1.495-.562l-.032-.022c-.391-.26-.646-.416-.973-.416-.833 0-1.218.246-2.223.916A.5.5 0 0 1 3.5 9V3a.5.5 0 0 1 .223-.416l.04-.026z"/>
-            </svg>
-      </div>
-      <ng-template #flagElseBlock>
-          <svg width="1em" height="1em" viewBox="0 0 16 16" style="margin-top:12px; color: red" class="bi bi-flag-fill" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
-              <path fill-rule="evenodd" d="M3.5 1a.5.5 0 0 1 .5.5v13a.5.5 0 0 1-1 0v-13a.5.5 0 0 1 .5-.5z"/>
-              <path fill-rule="evenodd" d="M3.762 2.558C4.735 1.909 5.348 1.5 6.5 1.5c.653 0 1.139.325 1.495.562l.032.022c.391.26.646.416.973.416.168 0 .356-.042.587-.126a8.89 8.89 0 0 0 .593-.25c.058-.027.117-.053.18-.08.57-.255 1.278-.544 2.14-.544a.5.5 0 0 1 .5.5v6a.5.5 0 0 1-.5.5c-.638 0-1.18.21-1.734.457l-.159.07c-.22.1-.453.205-.678.287A2.719 2.719 0 0 1 9 9.5c-.653 0-1.139-.325-1.495-.562l-.032-.022c-.391-.26-.646-.416-.973-.416-.833 0-1.218.246-2.223.916A.5.5 0 0 1 3.5 9V3a.5.5 0 0 1 .223-.416l.04-.026z"/>
-            </svg>
-      </ng-template>
-        <button type="button" class="close pull-right" aria-label="Close" (click)="modalRef.hide()">
-          <span aria-hidden="true">&times;</span>
-        </button>
-      </div>
-      <div class="modal-body">
-         
-        <p><b>Repository : </b>{{user?.public_repos}}</p>
-        <br>
-        <p><b>Followers : </b>{{user?.followers}}</p>
-        <br>
-        <p><b>Following : </b>{{user?.following}}</p>
-        <br>
-        <p><b>Created At : </b>{{user?.created_at | date}}</p>
-        <br>
-      </div>
-    </ng-template>
+    <div class="modal-body">
+      <b><span class="text ">Public_repos:</span></b><button class="btn btn-warning">{{userDetail?.public_repos}}</button><br>
+      <b><span class="text ">Followers:</span></b><p class="text text-gray-800">{{userDetail?.followers}}</p>
+      <b><span class="text ">Following:</span></b><p class="text text-gray-800">{{userDetail?.following}}</p>
+      <span class="text text-danger">Created_at:</span><p class="text text-gray-800">{{userDetail?.created_at | date }}</p>
+
+    </div>
+  </ng-template>
